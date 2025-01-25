@@ -1,4 +1,12 @@
-import { View, Text, StyleSheet, Image, Pressable, Alert } from 'react-native'
+import {
+  View,
+  Text,
+  StyleSheet,
+  Image,
+  Pressable,
+  Alert,
+  ActivityIndicator,
+} from 'react-native'
 import React, { useState } from 'react'
 import { router, Stack, useLocalSearchParams } from 'expo-router'
 import { defaultImage as defaultPizzaImage } from '@/constants/Images'
@@ -7,15 +15,26 @@ import { useCart } from '../../../providers/CartProvider'
 import { PizzaSize } from '../../../types'
 // import { useProduct } from '../../../api/products';
 import products from '../../../../assets/data/products'
+import { useProduct } from '@/api/products'
 
 const sizes: PizzaSize[] = ['S', 'M', 'L', 'XL']
 
 const ProductDetailsScreen = () => {
-  const { id } = useLocalSearchParams()
+  const { id: idString } = useLocalSearchParams()
   const [selectedSize, setSelectedSize] = useState<PizzaSize>('M')
   const { addItem } = useCart()
 
-  const product = products.find((p) => p.id == Number(id))
+  const id = parseFloat(typeof idString === 'string' ? idString : idString[0])
+
+  const { data: product, error, isLoading } = useProduct(id)
+
+  if (isLoading) {
+    return <ActivityIndicator />
+  }
+
+  if (error) {
+    return <Text>Failed to fetch product</Text>
+  }
 
   const addToCart = () => {
     if (!product) return

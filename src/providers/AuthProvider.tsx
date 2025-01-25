@@ -51,9 +51,10 @@ export default function AuthProvider({ children }: PropsWithChildren) {
       setSession(session)
     })
   }, [])
+
   return (
     <AuthContext.Provider
-      value={{ session, loading, profile, isAdmin: profile?.qroup === 'ADMIN' }}
+      value={{ session, loading, profile, isAdmin: profile?.qurop === 'ADMIN' }}
     >
       {children}
     </AuthContext.Provider>

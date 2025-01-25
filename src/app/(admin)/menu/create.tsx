@@ -1,10 +1,16 @@
 import { View, Text, StyleSheet, Image, TextInput, Alert } from 'react-native'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import { defaultImage as defaultPizzaImage } from '../../../constants/Images'
 import Colors from '../../../constants/Colors'
 import Button from '../../../components/Button'
 import * as ImagePicker from 'expo-image-picker'
 import { Stack, useLocalSearchParams, useRouter } from 'expo-router'
+import {
+  useDeleteProduct,
+  useInsertProduct,
+  useProduct,
+  useUpdateProduct,
+} from '@/api/products'
 
 const CreateScreen = () => {
   const [image, setImage] = useState<string | null>(null)
@@ -13,8 +19,22 @@ const CreateScreen = () => {
   const [errors, setErrors] = useState('')
 
   const router = useRouter()
-  const { id } = useLocalSearchParams()
+  const { id: idString } = useLocalSearchParams()
+  const id = parseFloat(typeof idString === 'string' ? idString : idString?.[0])
   const isUpdating = !!id
+
+  const { mutate: insertProduct } = useInsertProduct()
+  const { mutate: updateProduct } = useUpdateProduct()
+  const { data: updatingProduct } = useProduct(id)
+  const { mutate: deleteProduct } = useDeleteProduct()
+
+  useEffect(() => {
+    if (updatingProduct) {
+      setName(updatingProduct.name)
+      setImage(updatingProduct.image)
+      setPrice(updatingProduct.price.toString())
+    }
+  }, [updatingProduct])
 
   const validateInput = () => {
     setErrors('')
@@ -35,17 +55,43 @@ const CreateScreen = () => {
 
   const onSubmit = () => {
     if (isUpdating) {
-      //
+      if (!validateInput()) {
+        return
+      }
+
+      updateProduct(
+        {
+          id,
+          name,
+          image,
+          price: parseFloat(price),
+        },
+        {
+          onSuccess: () => {
+            router.back()
+          },
+        }
+      )
     } else {
       if (!validateInput()) {
         return
       }
 
-      console.warn('Creating dish')
+      insertProduct(
+        {
+          name,
+          image,
+          price: parseFloat(price),
+        },
+        {
+          onSuccess: () => {
+            router.back()
+          },
+        }
+      )
       setName('')
       setPrice('')
       setImage('')
-      router.back()
     }
   }
 
@@ -66,7 +112,11 @@ const CreateScreen = () => {
   }
 
   const onDelete = () => {
-    console.warn('deleted!!')
+    deleteProduct(id, {
+      onSuccess: () => {
+        router.replace('/(admin)/menu')
+      },
+    })
   }
   const confirmDelete = () => {
     Alert.alert(
