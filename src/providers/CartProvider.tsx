@@ -1,4 +1,4 @@
-import { CartItem, Product } from '@/types'
+import { CartItem, Tables } from '@/types'
 import { PropsWithChildren, createContext, useContext, useState } from 'react'
 import { randomUUID } from 'expo-crypto'
 // import { useInsertOrder } from '@/api/orders';
@@ -6,7 +6,7 @@ import { useRouter } from 'expo-router'
 // import { useInsertOrderItems } from '@/api/order-items';
 // import { initialisePaymentSheet, openPaymentSheet } from '@/lib/stripe';
 
-// type Product = Tables<'products'>
+type Product = Tables<'products'>
 
 type CartType = {
   items: CartItem[]
