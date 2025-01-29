@@ -12,6 +12,8 @@ export default function ManuScreen() {
     return <Text>Failed to fetch products</Text>
   }
 
+  console.log(products)
+
   return (
     <View>
       <FlatList

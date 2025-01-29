@@ -20,10 +20,10 @@ export default function TabLayout() {
   const colorScheme = useColorScheme()
 
   const { session } = useAuth()
+
   if (!session) {
     return <Redirect href={'/'} />
   }
-
   return (
     <Tabs
       screenOptions={{
@@ -55,6 +55,14 @@ export default function TabLayout() {
           title: 'Orders',
           headerShown: false,
           tabBarIcon: ({ color }) => <TabBarIcon name='list' color={color} />,
+        }}
+      />
+      <Tabs.Screen
+        name='profile'
+        options={{
+          title: 'Profile',
+
+          tabBarIcon: ({ color }) => <TabBarIcon name='user' color={color} />,
         }}
       />
     </Tabs>

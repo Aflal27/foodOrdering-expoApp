@@ -12,12 +12,15 @@ const index = () => {
     return <ActivityIndicator />
   }
   if (!session) {
-    return <Redirect href={'/(auth)/sign-in'} />
+    return <Redirect href={'/sign-in'} />
   }
 
-  // if (!isAdmin) {
-  //   return <Redirect href={'/(user)'} />
-  // }
+  if (profile?.qurop === 'USER') {
+    return <Redirect href={'/(user)'} />
+  }
+  if (profile?.qurop === 'ADMIN') {
+    return <Redirect href={'/(admin)'} />
+  }
 
   return (
     <View style={{ flex: 1, justifyContent: 'center', padding: 10 }}>
